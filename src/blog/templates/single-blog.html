@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load bootstrap4 %}
+{% load static %}
+  <!-- bradcam_area  -->
+  <div class="bradcam_area bradcam_bg_1">
+      <div class="container">
+          <div class="row">
+              <div class="col-xl-12">
+                  <div class="bradcam_text">
+                      <h3>{{blog.title}}</h3>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!--/ bradcam_area  -->
+
+   <!--================Blog Area =================-->
+   <section class="blog_area single-post-area section-padding">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-8 posts-list">
+               <div class="single-post">
+                  <div class="feature-img">
+                     <img class="img-fluid" src="{{blog.image.url}}" alt="">
+                  </div>
+                  <div class="blog_details">
+                     <h2>{{blog.title}}</h2>
+                     <ul class="blog-info-link mt-3 mb-4">
+                        <li><a href="#"><i class="fa fa-user"></i> {{blog.owner}}</a></li>
+                        <li><a href="#"><i class="fa fa-comments"></i> {{blog.comments.count}} Comments</a></li>
+                     </ul>
+                     <p class="excert">{{blog.description|linebreaks|urlize}}</p>
+                     <div class="quote-wrapper">
+                        <div class="quotes">
+                            {{blog.About_blog_By_owner|urlize}}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="navigation-top">
+                  <div class="d-sm-flex justify-content-between text-center">
+                     <div class="col-sm-4 text-center my-2 my-sm-0">
+                        <!-- <p class="comment-count"><span class="align-middle"><i class="fa fa-comment"></i></span> 06 Comments</p> -->
+                     </div>
+                     <ul class="social-icons">
+                        <li><a href=""><i class="fa fa-facebook-f"></i></a></li>
+                        <li><a href=""><i class="fa fa-twitter"></i></a></li>
+                        <li><a href=""><i class="fa fa-instagram"></i></a></li>
+                        <li><a href=""><i class="fa fa-behance"></i></a></li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="blog-author">
+                  <div class="media align-items-center">
+                     <img src="{{blog.owner_image.url}}" alt="">
+                     <div class="media-body">
+                        <a href="">
+                           <h4>{{blog.owner}}</h4>
+                        </a>
+                        <p>{{blog.About_blog_By_owner|urlize}}</p>
+                     </div>
+                  </div>
+               </div>
+               <div class="comments-area">
+                  <h4>{{blog.comments.count}} Comments...</h4>
+                  <div class="comment-list">
+                     {% if not blog.comments.all %}
+                        <h5>No Comments Yet...</h5>
+                     {% else %}
+                        {% for comment in blog.comments.all %}
+                           <div class="single-comment justify-content-between d-flex mt-5">
+                              <div class="user justify-content-between d-flex">
+                                 <div class="thumb">
+                                    <img src="{{comment.Photo_autor.url}}" alt="">
+                                 </div>
+                                 <div class="desc">
+                                       <div class="d-flex align-items-center">
+                                          <h5>
+                                             <a href="">{{comment.author}}</a>
+                                          </h5>
+                                          <p class="date">{{comment.publishde_at|date:'F n, Y'}} at {{comment.publishde_at|date:'g:i A'}}</p>
+                                       </div>
+                                    <div class="d-flex justify-content-between">
+                                       <p class="comment">{{comment.comment|urlize|linebreaks}}</p>
+                                       <div class="reply-btn">
+                                          <a href="" class="btn-reply text-uppercase">reply</a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        {% endfor %}
+                     {% endif %}
+                  </div>
+               </div>
+               <div class="comment-form">
+                  <h4>Leave a Reply</h4>
+                  {% if request.user.is_authenticated %}
+                     <form class="form-contact comment_form" method = 'POST' id="commentForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                           {% bootstrap_form form %}
+                        </div>
+                        <br>
+                        <br>
+                        <div class="form-group">
+                           <button type="submit" class="button button-contactForm btn_1 boxed-btn">Comment</button>
+                        </div>
+                     </form>
+                  {% else %}
+                     <p><a href="{% url 'login' %}">login</a> for add comment</p>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+
+                    <aside class="single_sidebar_widget post_category_widget">
+                        <h4 class="widget_title">Category</h4>
+                        <ul class="list cat-list">
+                            {% for cat in cts %}
+                                <li>
+                                <a href="" class="d-flex">
+                                    <p>{{cat.name}}({{cat.blogs.count}})</p>
+                                </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </aside>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">Recent Post</h3>
+                        {% for blog in blogs %}
+                            <div class="media post_item">
+                                <img src="{{blog.image.url}}" alt="post" style = 'width:100px;'>
+                                <div class="media-body">
+                                <a href="{% url 'blog:single_blog' blog.slug %}">
+                                    <h3>{{blog.title}}</h3>
+                                </a>
+                                <p>{{blog.publishde_at|date:'F d, o'}}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </aside>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!--================ Blog Area end =================-->
+{% endblock body %}

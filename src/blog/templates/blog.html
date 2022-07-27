@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% load static %}
+{% load bootstrap4 %}
+
+<style>
+    .cat{
+        cursor: pointer;
+    }
+    .cat p{
+        transition: all .1s;
+    }
+    .cat p:hover{
+        color: #13d66f;
+    }
+</style>
+
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>blog</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ bradcam_area  -->
+<!--================Blog Area =================-->
+<section class="blog_area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mb-5 mb-lg-0">
+                <div class="blog_left_sidebar">
+                    {% for blog in blogs %}
+                        <article class="blog_item bloghide blog{{blog.category.id}}">
+                            <div class="blog_item_img">
+                                <img class="card-img rounded-0" src="{{blog.image.url}}" alt="">
+                                <a href="" class="blog_item_date">
+                                    <h3>{{blog.publishde_at|date:'d'}}</h3>
+                                    <p>{{blog.publishde_at|date:'M'}}</p>
+                                </a>
+                            </div>
+                            <div class="blog_details">
+                                <a class="d-inline-block" href="{% url 'blog:single_blog' blog.slug %}">
+                                    <h2>{{blog.title}}</h2>
+                                </a>
+                                <p>{{blog.About_blog_By_owner}}</p>
+                                <ul class="blog-info-link">
+                                    <li><a href=""><i class="fa fa-user"></i> {{blog.owner}}</a></li>
+                                    <li><a href=""><i class="fa fa-comments"></i> {{blog.comments.count}} Comments</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                    {% endfor %}
+                    <nav class="blog-pagination justify-content-center d-flex">
+                        <ul class="pagination">
+                            {% if blogs.has_previous %}
+                                <li class="page-item">
+                                    <a href="?page={{blogs.previous_page_number}}" class="page-link" aria-label="Previous">
+                                        <i class="ti-angle-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for i in jobs.paginator.page_range %}
+                                <li class="page-item">
+                                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                                </li>
+                            {% endfor %}
+                            
+                            {% if jobs.has_next %}
+                                <li class="page-item">
+                                    <a href="?page={{jobs.next_page_number}}" class="page-link" aria-label="Next">
+                                        <i class="ti-angle-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    <aside class="single_sidebar_widget search_widget">
+                        <form action="" method = 'GET'>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    {% bootstrap_form myfilter.form %}
+                                </div>
+                            </div>
+                            <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn" type="submit">Search</button>
+                        </form>
+                    </aside>
+                    <aside class="single_sidebar_widget post_category_widget">
+                        <h4 class="widget_title">Category</h4>
+                        <ul class="list cat-list">
+                            {% for cat in cts %}
+                                <li>
+                                    <span class="d-flex cat{{cat.id}} cat">
+                                        <p>{{cat.name}}({{cat.blogs.count}})</p>
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </aside>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">Recent Post</h3>
+                        {% for blog in blogs|slice:'4' %}
+                            <div class="media post_item">
+                                <img src="{{blog.image.url}}" alt="post" style = 'width:100px;'>
+                                <div class="media-body">
+                                    <a href="{% url 'blog:single_blog' blog.slug %}">
+                                        <h3>{{blog.title}}</h3>
+                                    </a>
+                                    <p>{{blog.publishde_at|date:'F d, o'}}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </aside>
+
+                    <aside class="single_sidebar_widget instagram_feeds">
+                        <h4 class="widget_title">Instagram Feeds</h4>
+                        <ul class="instagram_row flex-wrap">
+                            {% for feed in blogs|slice:6 %}
+                                <li>
+                                    <a href="{{feed.instagram_feed}}">
+                                        <img class="img-fluid" src="{{feed.image.url}}" alt="">
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================Blog Area =================-->
+
+
+
+{% endblock body %}

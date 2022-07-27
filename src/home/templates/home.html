@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block body %}
+    <!-- slider_area_start -->
+    <div class="slider_area">
+        <div class="single_slider  d-flex align-items-center slider_bg_1">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 col-md-6">
+                        <div class="slider_text">
+                            <h5 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">{{j.count}}+ Jobs listed</h5>
+                            <h3 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".3s">Find your Dream Job</h3>
+                            <p class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".4s">We provide online instant cash loans with quick approval that suit your term length</p>
+                            <div class="sldier_btn wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".5s">
+                                <a href="" class="boxed-btn3">Upload your Resume</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s" data-wow-delay=".2s">
+            <img src="{% static 'img/banner/illustration.png' %}" alt="">
+        </div>
+    </div>
+    <!-- slider_area_end -->
+    <!-- catagory_area -->
+    <div class="catagory_area">
+        <div class="container">
+            <form action="{% url 'job:job_list' %}" method="get">
+                <div class="row cat_search">
+                    <div class="col-lg-3 col-md-4">
+                        <div class="single_input">
+                            {{myfilter.title}}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <div class="single_input">
+                            {{myfilter.location}}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <div class="single_input">
+                            {{myfilter.category}}
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-12">
+                        <div class="job_btn">
+                            <input type="submit" class="boxed-btn3 w-100" value='Find Job'>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="popular_search d-flex align-items-center">
+                        <span>Popular Search:</span>
+                        <ul>
+                            {% for cat in cats|slice:'5' %}
+                                <li><a href="{% url 'job:job_list' %}">{{cat.name}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ catagory_area -->
+    {% if request.user.is_authenticated %}
+        <div class="testimonial_area">
+            <div class="container">
+                <div class="row">
+                    <div class="section_title mb-40">
+                        <h3>Write Your Testimonial</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <br>
+                        <hr>
+                        <br>
+                        <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            {% bootstrap_form form %}
+                            <br>
+                            <button class="boxed-btn3">Publish</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <!-- popular_catagory_area_start  -->
+    <div class="popular_catagory_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section_title mb-40">
+                        <h3>Popular Categories</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for cat in cats %}
+                    <div class="col-lg-4 col-xl-3 col-md-6">
+                        <div class="single_catagory">
+                            <a href="{% url 'jobs:job_list' %}"><h4>{{cat.name}}</h4></a>
+                            <p> <span>{{cat.jobs.count}}</span> Available position</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- popular_catagory_area_end  -->
+
+    <!-- job_listing_area_start  -->
+    <div class="job_listing_area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="section_title">
+                        <h3>Job Listing</h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="brouse_job text-right">
+                        <a href="{% url 'jobs:job_list' %}" class="boxed-btn4">Browse More Job</a>
+                    </div>
+                </div>
+            </div>
+            <div class="job_lists">
+                <div class="row">
+                    {% for job in j %}
+                        <div class="col-lg-12 col-md-12">
+                            <div class="single_jobs white-bg d-flex justify-content-between">
+                                <div class="jobs_left d-flex align-items-center">
+                                    <div class="thumb p-0">
+                                        <img src="{{job.image.url}}" alt="" style = 'width:80px;height:80px;'>
+                                    </div>
+                                    <div class="jobs_conetent">
+                                        <a href="{% url 'jobs:job_detail' job.slug %}"><h4>{{job.title}}</h4></a>
+                                        <div class="links_locat d-flex align-items-center">
+                                            <div class="location">
+                                                <p> <i class="fa fa-map-marker"></i> {{job.location}}</p>
+                                            </div>
+                                            <div class="location">
+                                                <p> <i class="fa fa-clock-o"></i> {{job.job_type}}</p>
+                                            </div>
+                                            <div class="location">
+                                                <p> <i class="bi bi-building"></i> {{job.company}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="jobs_right">
+                                    <div class="apply_now">
+                                        {% if request.user.is_autheticated %}
+                                            {% if request.user in job.like.all %}
+                                                <a class="heart_mark" href="{% url 'job:like' job.slug %}"> <i class="fa fa-heart"></i> </a>
+                                            {% else %}
+                                                <a class="heart_mark" href="{% url 'job:like' job.slug %}"> <i class="ti-heart"></i> </a>                                    
+                                            {% endif %}
+                                        {% else %}
+                                            <a class="heart_mark" href="{% url 'login' %}"> <i class="ti-heart"></i> </a>
+                                        {% endif %}
+                                        <a href="{% url 'jobs:job_detail' job.slug %}" class="boxed-btn3">Apply Now</a>
+                                    </div>
+                                    <div class="date">
+                                        <p>Date line: {{job.published_at|date:'d M o'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- job_listing_area_end  -->
+    
+    {% if a %}
+        <!-- featured_candidates_area_start  -->
+        <div class="featured_candidates_area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section_title text-center mb-40">
+                            <h3>Featured Candidates</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="candidate_active owl-carousel">
+                            {% for apply in a %}
+                                <div class="single_candidates text-center" style = 'width: 250px;height: 290px;'>
+                                    {% if apply.image %}
+                                        <div class="thumb">
+                                            <img src="{{apply.image.url}}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="thumb">
+                                            <img src="" alt="">
+                                        </div>
+                                    {% endif %}
+                                    <a href="#"><h4>{{apply.name}}</h4></a>
+                                    <p>{{apply.job.title}}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- featured_candidates_area_end  -->
+    {% endif %}
+    <div class="top_companies_area">
+        <div class="container">
+            <div class="row align-items-center mb-40">
+                <div class="col-lg-6 col-md-6">
+                    <div class="section_title">
+                        <h3>Top Companies</h3>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="brouse_job text-right">
+                        <a href="{% url 'jobs:job_list' %}" class="boxed-btn4">Browse More Job</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for c in companys %}
+                    <div class="col-lg-4 col-xl-3 col-md-6">
+                        <div class="single_company">
+                            <div class="thumb p-0">
+                                <img src="{{c.image.url}}" alt="" style = 'width:80px;height:80px;'>
+                            </div>
+                            <a href="{% url 'jobs:job_list' %}"><h3>{{c.name}}</h3></a>
+                            <p> <span>{{c.jobs.count}}</span> Available position</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- job_searcing_wrap  -->
+    <div class="job_searcing_wrap overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 offset-lg-1 col-md-6">
+                    <div class="searching_text">
+                        <h3>Looking for a Job?</h3>
+                        <p>We provide online instant cash loans with quick approval </p>
+                        <a href="{% url 'jobs:job_list' %}" class="boxed-btn3">Browse Job</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 offset-lg-1 col-md-6">
+                    <div class="searching_text">
+                        <h3>Looking for a Expert?</h3>
+                        <p>We provide online instant cash loans with quick approval </p>
+                        <a href="{% url 'jobs:add_job' %}" class="boxed-btn3">Post a Job</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- job_searcing_wrap end  -->
+
+    
+    {% if test %}
+        <!-- testimonial_area  -->
+        <div class="testimonial_area  ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section_title text-center mb-40">
+                            <h3>Testimonial</h3>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="testmonial_active owl-carousel">
+                            {% for t in test %}
+                                <div class="single_carousel">
+                                    <div class="row">
+                                        <div class="col-lg-11">
+                                            <div class="single_testmonial d-flex align-items-center">
+                                                <div class="thumb">
+                                                    <img src="{{t.image.url}}" alt="" style="width: 200px;height:180px;">
+                                                    <div class="quote_icon">
+                                                        <i class="Flaticon flaticon-quote"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="info">
+                                                    <p>{{t.testimonial}}</p>
+                                                    <span>- {{t.owner}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /testimonial_area  -->
+    {% endif %}
+
+
+    {% endblock body %}
